@@ -1,0 +1,6 @@
+web_controllers:
+    resource: ../src/Shared/UI/Web/Controller/
+    type: attribute
+    prefix:
+        fr: ''
+        en: '/en'

@@ -1,0 +1,32 @@
+services:
+  php:
+    image: moodyra/php:8.3-alpine
+    depends_on:
+      - db
+    volumes:
+      - .:/var/www
+  web:
+    image: nginx:1.24-alpine
+    environment:
+      - TZ=Europe/Paris
+    depends_on:
+      - php
+    ports:
+      - 8001:80
+    volumes:
+      - .:/var/www
+      - ./docker/web/default.conf:/etc/nginx/conf.d/default.conf
+  db:
+    image: postgres:16-alpine
+    ports:
+      - 54321:5432 # On expose le port pour pouvoir inspecter la base pendant la phase de développement
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-database}
+        # You should definitely change the password in production
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-rootpassword}
+      POSTGRES_USER: ${POSTGRES_USER:-root}
+      TZ: Europe/Paris
+      PGTZ: Europe/Paris
+    volumes:
+      - ./var/db:/var/lib/postgresql/data
+      - ./var:/var/www/var
